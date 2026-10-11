@@ -1,0 +1,116 @@
+[worldserver]
+
+###################################################################################################
+#
+#  MOD-SMALL-RAID-FIXES CONFIGURATION
+#
+#  Fixes specific raid encounter mechanics that bypass AutoBalance's stat-scaling hooks.
+#  Each fix scales linearly with player count: maximum reduction at 1 player, no
+#  intervention at PlayerThreshold (default 10) or above. AutoBalance handles all
+#  stat scaling at 10+ players, so mechanic fixes are unnecessary there.
+#
+###################################################################################################
+
+#   SmallRaidFixes.Enable
+#     Description: Master enable/disable switch. When 0, all fixes in this module are inactive.
+#     Default: 1
+
+SmallRaidFixes.Enable = 1
+
+###################################################################################################
+#  MOLTEN CORE
+###################################################################################################
+
+#   SmallRaidFixes.MC.Enable
+#     Description: Enable/disable all Molten Core fixes.
+#     Default: 1
+
+SmallRaidFixes.MC.Enable = 1
+
+#   SmallRaidFixes.MC.PlayerThreshold
+#     Description: Player count at which MC fixes become inactive. At this count and above,
+#                  vanilla behavior applies and AutoBalance handles scaling.
+#                  Scaling is linear: 1 player = full fix, (threshold-1) players = minimal fix.
+#     Default: 10
+
+SmallRaidFixes.MC.PlayerThreshold = 10
+
+# --  Fix 1: Majordomo Executus - Firepit DoT Reduction  ------------------------------------
+
+#   SmallRaidFixes.Majordomo.FirepitFix.Enable
+#     Description: Reduces periodic fire damage from Majordomo's burning coal ground aura.
+#                  This is a player-side aura tick that bypasses AutoBalance entirely.
+#                  Has no effect at MC.PlayerThreshold or above.
+#     Default: 1
+
+SmallRaidFixes.Majordomo.FirepitFix.Enable = 1
+
+#   SmallRaidFixes.Majordomo.FirepitDamageScalar
+#     Description: Damage multiplier applied to solo players (1 player).
+#                  Scales linearly toward 1.0 (no reduction) as player count rises.
+#                  1.0 = full 40-player-tuned damage (likely fatal for non-tanks)
+#                  0.35 = 35% damage (survivable with self-healing or potions)
+#                  0.1 = 10% damage (very easy)
+#     Default: 0.35
+
+SmallRaidFixes.Majordomo.FirepitDamageScalar = 0.35
+
+# --  Fix 2: Ragnaros - Wrath of Ragnaros Knockback Frequency  ----------------------------
+
+#   SmallRaidFixes.Ragnaros.WrathFix.Enable
+#     Description: Reduces the frequency of the Wrath of Ragnaros knockback (spell 20566).
+#                  The vanilla knockback fires on a hard-coded 25s C++ timer that AutoBalance
+#                  cannot modify. Solo players cannot recover aggro fast enough between hits.
+#                  Has no effect at MC.PlayerThreshold or above.
+#     Default: 1
+
+SmallRaidFixes.Ragnaros.WrathFix.Enable = 1
+
+#   SmallRaidFixes.Ragnaros.WrathMinIntervalMs
+#     Description: Minimum milliseconds between Wrath casts for solo players (1 player).
+#                  Scales linearly toward 25000ms (vanilla ~25s timer) as player count rises.
+#                  Note: this throttles the spell via BeforeCast, not by modifying boss AI.
+#     Default: 50000 (50 seconds)
+
+SmallRaidFixes.Ragnaros.WrathMinIntervalMs = 50000
+
+###################################################################################################
+#  BLACKWING LAIR
+###################################################################################################
+
+#   SmallRaidFixes.BWL.Enable
+#     Description: Enable/disable all Blackwing Lair fixes.
+#     Default: 1
+
+SmallRaidFixes.BWL.Enable = 1
+
+# --  Fix 3: Razorgore Phase 1 - Add Cap  -------------------------------------------------
+
+#   SmallRaidFixes.BWL.RazorgoreAddFix.Enable
+#     Description: Caps the number of living adds during Razorgore Phase 1.
+#                  Vanilla spawns up to 52 adds (12 dragonkins + 40 orcs) into a room where
+#                  the player is immobilised on the mind-control orb. This scales the cap
+#                  from MaxAddsSolo at 1 player up to 52 at BWL.PlayerThreshold.
+#                  Has no effect at BWL.PlayerThreshold or above.
+#     Default: 1
+
+SmallRaidFixes.BWL.RazorgoreAddFix.Enable = 1
+
+#   SmallRaidFixes.BWL.MaxAddsSolo
+#     Description: Maximum number of living Razorgore-phase adds when solo (1 player).
+#                  Scales linearly toward 52 (vanilla cap) as player count rises.
+#                  3 allows mild pressure without overwhelming a solo player on the orb.
+#     Default: 3
+
+SmallRaidFixes.BWL.MaxAddsSolo = 3
+
+#   SmallRaidFixes.BWL.PlayerThreshold
+#     Description: Player count at which the BWL Razorgore add fix becomes inactive.
+#                  At this count and above, vanilla add spawning applies.
+#     Default: 10
+
+SmallRaidFixes.BWL.PlayerThreshold = 10
+
+###################################################################################################
+# END OF CONFIGURATION
+###################################################################################################

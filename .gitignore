@@ -1,0 +1,6 @@
+*.swp
+*.swo
+*.log
+*.bak
+build/
+__pycache__/
