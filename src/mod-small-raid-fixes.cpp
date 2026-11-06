@@ -209,9 +209,8 @@ class SmallRaidFixes_WrathOfRagnaros : public SpellScript
             uint32 elapsed = getMSTimeDiff(it->second, currentTime);
             if (elapsed < minInterval)
             {
-                PreventHitDefaultEffect(EFFECT_0);
-                PreventHitDefaultEffect(EFFECT_1);
-                PreventHitDefaultEffect(EFFECT_2);
+                // Effects can only be prevented from a hit hook, see HandleEffectHit.
+                _suppressed = true;
                 return;
             }
         }
@@ -219,10 +218,20 @@ class SmallRaidFixes_WrathOfRagnaros : public SpellScript
         g_LastWrathCastTime[mapInstanceId] = currentTime;
     }
 
+    void HandleEffectHit(SpellEffIndex effIndex)
+    {
+        if (_suppressed)
+            PreventHitDefaultEffect(effIndex);
+    }
+
     void Register() override
     {
         BeforeCast += SpellCastFn(SmallRaidFixes_WrathOfRagnaros::HandleBeforeCast);
+        OnEffectHitTarget += SpellEffectFn(SmallRaidFixes_WrathOfRagnaros::HandleEffectHit, EFFECT_ALL, SPELL_EFFECT_ANY);
     }
+
+private:
+    bool _suppressed = false;
 };
 
 // ============================================================

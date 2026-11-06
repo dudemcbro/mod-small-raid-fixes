@@ -16,7 +16,7 @@ Works alongside [mod-autobalance](https://github.com/azerothcore/mod-autobalance
 ## Requirements
 
 - AzerothCore WotLK (3.3.5a). The module only uses standard core APIs.
-- No SQL and no core patches.
+- No core patches. One world SQL file binds the Ragnaros fix to its spell.
 
 ## Installation
 
@@ -29,7 +29,9 @@ Works alongside [mod-autobalance](https://github.com/azerothcore/mod-autobalance
 
 2. Re-run CMake and rebuild the core, for example with `./acore.sh compiler build`.
 
-3. Set up the config file (below) and restart `worldserver`.
+3. Set up the config file (below) and restart `worldserver`. It imports
+   `data/sql/world` on startup (with the updater enabled, the default). The file can run
+   again safely.
 
 ## Configuration
 
@@ -48,7 +50,9 @@ git pull
 Then re-run CMake, rebuild and restart `worldserver`. Compare your
 `mod-small-raid-fixes.conf` with the new `.conf.dist` and add any new options.
 
-To remove the module, delete its folder, re-run CMake and rebuild.
+To remove the module, delete its folder, re-run CMake and rebuild. The leftover
+`spell_script_names` row for spell 20566 only causes a startup warning; delete it to
+clear that.
 
 ## Contributing
 
